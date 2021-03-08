@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Midterm API Interaction Example</title>
+
+    <!-- jQuery -->
+    <script language="javascript" src="/jq/jquery.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script language="javascript" src="/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+  </head>
+  <body>
+    <main class="container justify-content-center text-center">
+      <h1>This is a heading for the default page of my website</h1>
+      <input type="text" id="key" name="key" placeholder="primary_arr" />
+      <button id="api_button" class="btn btn-primary">
+        Click me to hit an API
+      </button>
+      <div id="json-container"></div>
+      <h1 id="error" style="color: red; display: none">
+        There was an error with your request
+      </h1>
+    </main>
+  </body>
+
+  <script>
+    $(document).ready(() => {
+      $('#error').hide();
+      $('#api_button').on('click', (e) => {
+        $('#json-container').empty();
+        var keyName = $('#key').val();
+        if (keyName === '') keyName = 'primary_arr';
+        $.ajax(`/v1/data?key=${keyName}`, {
+          type: 'GET',
+          dataType: 'JSON',
+          crossDomain: true,
+        })
+          .done((data, status, XHR) => {
+            console.log(XHR.status);
+            console.log(typeof data);
+            $('#error').hide();
+            $('#json-container').empty();
+            if (!(data instanceof Object))
+              $('#json-container').append(`<p>${data}</p>`);
+            else {
+              data.map((elem) => {
+                $('#json-container').append(`<p>${elem}</p>`);
+              });
+            }
+          })
+          .fail((XHR, status, error) => {
+            console.log(XHR.status);
+            let errorText = $('#error').text();
+            errorText += ` (${XHR.status})`;
+            $('#error').text(errorText);
+            $('#error').show();
+          });
+      });
+    });
+  </script>
+</html>
