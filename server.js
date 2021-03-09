@@ -15,6 +15,7 @@ app.use('/', express.static(path.join(__dirname, 'public')));
 
 app.get('/v1/data', (req, res) => {
   // Read in the object key to return
+  // localhost:3000/v1/data?key=<SOME KEY>
   let key = req.query.key;
   console.log(`Received API request for ${key}`);
 
